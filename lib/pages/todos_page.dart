@@ -1,3 +1,5 @@
+import 'package:bloc_todo_app/pages/create_todo.dart';
+import 'package:bloc_todo_app/pages/todo_header.dart';
 import 'package:flutter/material.dart';
 
 class TodosPage extends StatelessWidget {
@@ -5,6 +7,21 @@ class TodosPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(body: Center(child: Text("Todo")));
+    return const Scaffold(
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: 20,
+            vertical: 40,
+          ),
+          child: Column(
+            children: [
+              TodoHeader(),
+              CreateTodo(),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

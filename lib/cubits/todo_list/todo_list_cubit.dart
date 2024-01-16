@@ -9,6 +9,7 @@ class TodoListCubit extends Cubit<TodoListState> {
 
   void addTodo(String todoDesc) {
     emit(state.copyWith(todoList: [...state.todoList, Todo(desc: todoDesc)]));
+    print(state);
   }
 
 //XXX id가 아닌 Todo를 받는 이유? ui함수 호출시 간단하게 하려고?
