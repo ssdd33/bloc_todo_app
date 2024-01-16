@@ -1,42 +1,18 @@
-import 'dart:async';
-
 import 'package:bloc/bloc.dart';
-import 'package:bloc_todo_app/cubits/todo_filter/todo_filter_cubit.dart';
-import 'package:bloc_todo_app/cubits/todo_list/todo_list_cubit.dart';
-import 'package:bloc_todo_app/cubits/todo_search/todo_search_cubit.dart';
 import 'package:bloc_todo_app/models/todo_model.dart';
 import 'package:equatable/equatable.dart';
 
 part 'filtered_todos_state.dart';
 
 class FilteredTodosCubit extends Cubit<FilteredTodosState> {
-  final TodoListCubit todoListCubit;
-  final TodoFilterCubit todoFilterCubit;
-  final TodoSearchCubit searchTermCubit;
-  late final StreamSubscription todoListStream;
-  late final StreamSubscription todoFilterStream;
-  late final StreamSubscription searchTermStream;
-  FilteredTodosCubit({
-    required this.todoListCubit,
-    required this.todoFilterCubit,
-    required this.searchTermCubit,
-  }) : super(FilteredTodosState.initial(todoListCubit.state.todoList)) {
-    todoListStream = todoListCubit.stream.listen((event) {
-      setFilteredTodos();
-    });
-    todoFilterStream = todoFilterCubit.stream.listen((event) {
-      setFilteredTodos();
-    });
-    searchTermStream = searchTermCubit.stream.listen((event) {
-      setFilteredTodos();
-    });
-  }
+  final List<Todo> initialTodoList;
+  FilteredTodosCubit({required this.initialTodoList})
+      : super(FilteredTodosState(filteredTodos: initialTodoList));
 
-  void setFilteredTodos() {
+  setFilteredTodos(List<Todo> todos, String searchTerm, Filter filter) {
     List<Todo> filteredTodos;
-    final todos = todoListCubit.state.todoList;
-    final searchTerm = searchTermCubit.state.searchTerm;
-    switch (todoFilterCubit.state.filter) {
+
+    switch (filter) {
       case Filter.all:
         filteredTodos = todos;
         break;
@@ -54,14 +30,5 @@ class FilteredTodosCubit extends Cubit<FilteredTodosState> {
       }).toList();
     }
     emit(state.copyWith(filteredTodos: filteredTodos));
-  }
-
-  @override
-  Future<void> close() {
-    todoListStream.cancel();
-    todoFilterStream.cancel();
-    searchTermStream.cancel();
-
-    return super.close();
   }
 }

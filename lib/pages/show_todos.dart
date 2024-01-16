@@ -9,23 +9,50 @@ class ShowTodos extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final todos = context.watch<FilteredTodosCubit>().state.filteredTodos;
-    return ListView.separated(
-      primary: false,
-      shrinkWrap: true,
-      itemCount: todos.length,
-      itemBuilder: (context, index) {
-        return Dismissible(
-            key: ValueKey(todos[index].id),
-            background: showBackground(1),
-            secondaryBackground: showBackground(0),
-            onDismissed: (_) {
-              context.read<TodoListCubit>().removeTodo(todos[index]);
-            },
-            child: TodoItem(todo: todos[index]));
-      },
-      separatorBuilder: (_, __) {
-        return const Divider(color: Colors.grey);
-      },
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<TodoListCubit, TodoListState>(listener: (context, state) {
+          context.read<FilteredTodosCubit>().setFilteredTodos(
+                state.todoList,
+                context.read<TodoSearchCubit>().state.searchTerm,
+                context.read<TodoFilterCubit>().state.filter,
+              );
+        }),
+        BlocListener<TodoFilterCubit, TodoFilterState>(
+            listener: (context, state) {
+          context.read<FilteredTodosCubit>().setFilteredTodos(
+                context.read<TodoListCubit>().state.todoList,
+                context.read<TodoSearchCubit>().state.searchTerm,
+                state.filter,
+              );
+        }),
+        BlocListener<TodoSearchCubit, TodoSearchState>(
+            listener: (context, state) {
+          context.read<FilteredTodosCubit>().setFilteredTodos(
+                context.read<TodoListCubit>().state.todoList,
+                state.searchTerm,
+                context.read<TodoFilterCubit>().state.filter,
+              );
+        })
+      ],
+      child: ListView.separated(
+        primary: false,
+        shrinkWrap: true,
+        itemCount: todos.length,
+        itemBuilder: (context, index) {
+          return Dismissible(
+              key: ValueKey(todos[index].id),
+              background: showBackground(1),
+              secondaryBackground: showBackground(0),
+              onDismissed: (_) {
+                context.read<TodoListCubit>().removeTodo(todos[index]);
+              },
+              child: TodoItem(todo: todos[index]));
+        },
+        separatorBuilder: (_, __) {
+          return const Divider(color: Colors.grey);
+        },
+      ),
     );
   }
 
