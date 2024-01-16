@@ -15,6 +15,7 @@ class TodoListCubit extends Cubit<TodoListState> {
 //XXX id가 아닌 Todo를 받는 이유? ui함수 호출시 간단하게 하려고?
   void removeTodo(Todo todo) {
     final newTodos = state.todoList.where((t) => t.id != todo.id).toList();
+    print('${todo.id}, ${state.todoList},$newTodos');
     emit(state.copyWith(todoList: newTodos));
   }
 

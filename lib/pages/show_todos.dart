@@ -14,7 +14,14 @@ class ShowTodos extends StatelessWidget {
       shrinkWrap: true,
       itemCount: todos.length,
       itemBuilder: (context, index) {
-        return Text(todos[index].desc);
+        return Dismissible(
+            key: ValueKey(todos[index].id),
+            background: showBackground(1),
+            secondaryBackground: showBackground(0),
+            onDismissed: (_) {
+              context.read<TodoListCubit>().removeTodo(todos[index]);
+            },
+            child: TodoItem(todo: todos[index]));
       },
       separatorBuilder: (_, __) {
         return const Divider(color: Colors.grey);
@@ -22,7 +29,98 @@ class ShowTodos extends StatelessWidget {
     );
   }
 
-  Widget todoItem(Todo todo) {
-    return const ListTile();
+  Widget showBackground(int direction) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      margin: const EdgeInsets.all(4),
+      color: Colors.redAccent,
+      alignment: direction == 1 ? Alignment.centerLeft : Alignment.centerRight,
+      child: const Icon(
+        Icons.delete,
+        color: Colors.white,
+        size: 30,
+      ),
+    );
+  }
+}
+
+class TodoItem extends StatefulWidget {
+  final Todo todo;
+  const TodoItem({
+    Key? key,
+    required this.todo,
+  }) : super(key: key);
+
+  @override
+  State<TodoItem> createState() => _TodoItemState();
+}
+
+class _TodoItemState extends State<TodoItem> {
+  late final TextEditingController _textEditingController;
+
+  @override
+  void initState() {
+    _textEditingController = TextEditingController();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _textEditingController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: Checkbox(
+        value: widget.todo.completed,
+        onChanged: (bool? checked) {
+          context.read<TodoListCubit>().toggleTodo(widget.todo.id);
+        },
+      ),
+      title: Text(widget.todo.desc),
+      onTap: () {
+        showDialog(
+            context: context,
+            builder: (context) {
+              bool error = false;
+              _textEditingController.text = widget.todo.desc;
+              return StatefulBuilder(
+                builder: (BuildContext context, setState) {
+                  return AlertDialog(
+                    title: const Text('edit'),
+                    content: TextField(
+                      controller: _textEditingController,
+                      autofocus: true,
+                      decoration: InputDecoration(
+                          errorText: error ? "text is can't be empty" : ''),
+                    ),
+                    actions: [
+                      TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Text('CANCEL')),
+                      TextButton(
+                          onPressed: () {
+                            setState(() {
+                              error = _textEditingController.text.isEmpty;
+                              if (!error) {
+                                context.read<TodoListCubit>().editTodo(
+                                    widget.todo.id,
+                                    _textEditingController.text);
+                                Navigator.pop(context);
+                              }
+                            });
+                          },
+                          child: const Text('EDIT'))
+                    ],
+                  );
+                },
+              );
+            });
+      },
+    );
   }
 }

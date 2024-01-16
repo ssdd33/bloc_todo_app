@@ -8,8 +8,8 @@ class TodoListState extends Equatable {
   factory TodoListState.initial() {
     return TodoListState(todoList: [
       Todo(id: '1', desc: 'live your time'),
-      Todo(id: '1', desc: 'stay healthy'),
-      Todo(id: '1', desc: 'being own'),
+      Todo(id: '2', desc: 'stay healthy'),
+      Todo(id: '3', desc: 'being own'),
     ]);
   }
 
