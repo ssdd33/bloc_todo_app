@@ -5,8 +5,9 @@ class FilteredTodosState extends Equatable {
 
   const FilteredTodosState({required this.filteredTodos});
 
-  factory FilteredTodosState.initial() {
-    return const FilteredTodosState(filteredTodos: []);
+  factory FilteredTodosState.initial([List<Todo>? initialTodos]) {
+    print('$initialTodos');
+    return FilteredTodosState(filteredTodos: initialTodos ?? []);
   }
 
   @override

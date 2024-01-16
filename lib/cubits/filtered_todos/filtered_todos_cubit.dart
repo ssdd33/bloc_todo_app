@@ -20,7 +20,7 @@ class FilteredTodosCubit extends Cubit<FilteredTodosState> {
     required this.todoListCubit,
     required this.todoFilterCubit,
     required this.searchTermCubit,
-  }) : super(FilteredTodosState.initial()) {
+  }) : super(FilteredTodosState.initial(todoListCubit.state.todoList)) {
     todoListStream = todoListCubit.stream.listen((event) {
       setFilteredTodos();
     });
@@ -49,7 +49,7 @@ class FilteredTodosCubit extends Cubit<FilteredTodosState> {
     }
 
     if (searchTerm.isNotEmpty) {
-      filteredTodos = todos.where((todo) {
+      filteredTodos = filteredTodos.where((todo) {
         return todo.desc.toLowerCase().contains(searchTerm.toLowerCase());
       }).toList();
     }

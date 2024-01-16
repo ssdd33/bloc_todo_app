@@ -5,6 +5,10 @@ Uuid uuid = const Uuid();
 
 enum Filter { all, active, completed }
 
+extension FilterX on Filter {
+  String get label => name.substring(0, 1).toUpperCase() + name.substring(1);
+}
+
 class Todo extends Equatable {
   final String id;
   final String desc;

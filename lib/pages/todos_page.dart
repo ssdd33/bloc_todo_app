@@ -1,4 +1,6 @@
 import 'package:bloc_todo_app/pages/create_todo.dart';
+import 'package:bloc_todo_app/pages/search_and_filter_todo.dart';
+import 'package:bloc_todo_app/pages/show_todos.dart';
 import 'package:bloc_todo_app/pages/todo_header.dart';
 import 'package:flutter/material.dart';
 
@@ -18,6 +20,9 @@ class TodosPage extends StatelessWidget {
             children: [
               TodoHeader(),
               CreateTodo(),
+              SizedBox(height: 20),
+              SearchAndFilterTodo(),
+              ShowTodos()
             ],
           ),
         ),
