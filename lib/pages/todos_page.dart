@@ -9,20 +9,20 @@ class TodosPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.symmetric(
+          padding: const EdgeInsets.symmetric(
             horizontal: 20,
             vertical: 40,
           ),
           child: Column(
             children: [
-              TodoHeader(),
-              CreateTodo(),
-              SizedBox(height: 20),
+              const TodoHeader(),
+              const CreateTodo(),
+              const SizedBox(height: 20),
               SearchAndFilterTodo(),
-              ShowTodos()
+              const ShowTodos()
             ],
           ),
         ),
